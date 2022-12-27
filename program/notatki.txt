@@ -1,0 +1,26 @@
+notatki do projektu 
+
+przyklad 
+
+rzeczy od wygenerowania:
+    macierz elementow(zadanej przez uzytkownika)
+    vektor min/max(length(macierz))
+    vektor cech (length(macierz))
+
+na podstwie danych wyznaczanie optimum
+    algorytm zachlanny 
+    ulosowienie algorytmu zachlannego
+    
+    powtarzanie ulosowionego algorytmu zachlannego aby znalesc optimum
+
+
+ulosowiony algorytm zachlanny ; sposob dzialania
+    algorytm zaczyna prace od dolaczenia do teamu wybranego losowo (badz lowosowo) punktu startowego
+    petla tak dlugo az wielkosc team nie bedzie rowna zadanej
+    {
+    pozniej wybiera losowo kolejny punkt ktory porownoje do pierwszego (ktory jest zapisany jak max)
+        jesli nowy jest lepszy od starszego zostaje dobrany do teamu 
+        else zostaje oznaczony jako porownany
+
+        jesli wyczerpana zostanie macierz zwykla algorytm dobiera najlepsze z posrod wczesniej porownanch
+    }
