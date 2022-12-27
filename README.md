@@ -1,0 +1,2 @@
+# Optymalizacja-kompozycji-TFT
+Obtymalizacja 
