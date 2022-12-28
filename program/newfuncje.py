@@ -1,4 +1,5 @@
 import random
+from itertools import combinations
 
 
 def sort_tabs(tab1, tab2):
@@ -65,6 +66,26 @@ def printmatrix(matrix, mode):
         print()
 
 
+def count_points_t(matrix, team, combo_v, weights, limits):
+    sum = 0
+    traits = [0]*(len(matrix[0])-1)
+
+    # value of champs
+    for i in range(len(team)):
+        sum += (matrix[team[i]][-1] / 100)
+
+    # caltuate traits
+    for i in range(len(matrix[0])-1):
+        for j in range(len(matrix)):
+            traits[i] += matrix[j][i]
+
+    # importace of active traits and combo
+    for i in range(len(traits)):
+        sum += (traits[i] // limits[i]) * weights[i] * combo_v
+    print(team, sum)
+    return sum
+
+
 def optimal_chamion(matrix, actual_traits, combo_importance, weights, limits, tabs, ac_team):
     index = 0
     copy_traits = actual_traits[:]
@@ -106,13 +127,13 @@ def optimal_chamion(matrix, actual_traits, combo_importance, weights, limits, ta
                     ncopy += copy_traits[j]//limits[j]
 
                 # suma punktow
-                pnk = matrix[i][-1] + sawag + (nactual*ncopy)*combo_importance
+                pnk = matrix[i][-1] + sawag + \
+                    (nactual - ncopy)*combo_importance
 
                 if pnk >= best:
                     index = i
 
-        # champion remove
-
+    # champion remove
     for i in range(len(matrix[0])-1):
         try:
             tabs[i].remove(index)
@@ -124,25 +145,54 @@ def optimal_chamion(matrix, actual_traits, combo_importance, weights, limits, ta
 
     # printmatrix(tabs,"traits")
     # print(weights)
-    #print("wziety element: ", index)
-    #printmatrix(matrix, "champions")
+    # print("wziety element: ", index)
+    # printmatrix(matrix, "champions")
     # print(actual_traits)
     for j in range(len(matrix[0])-1):
         actual_traits[j] = actual_traits[j] + matrix[index][j]
-
+    print(weights, "w algo")
     return index, actual_traits, matrix, weights, limits, tabs
 
 
-def generate_optimal_team(matrix, size,  combo_importance, weights, limits, tabs):
+def generate_optimal_team_g(matrix, size,  combo_importance, weights, limits, tabs):
+    maxteam = []
+    maxv = 0
+    ctabs = tabs
+    cweights = weights
+    print(cweights, weights)
+    for _ in range(0, 10):
+        team = []
+        traits = [0]*(len(matrix[0])-1)
+
+        for i in range(0, size):
+            #team.extend([optimal_chamion( matrix , team , combo_importance )])
+            new_champ, traits, matrix, weights, limits, tabs = optimal_chamion(
+                matrix, traits, combo_importance, cweights, limits, ctabs, team)
+            team.extend([new_champ])
+
+        print(team, cweights, weights)
+        v = count_points_t(matrix, team, combo_importance, weights, limits)
+        if v > maxv:
+            maxteam = [team]
+            maxv = v
+        elif v == maxv:
+            maxteam.append(team)
+
+    return maxteam, maxv
+
+
+def generate_optimal_team_bf(matrix, size,  combo_importance, weights, limits):
     team = []
-    traits = [0]*(len(matrix[0])-1)
-    for i in range(0, size):
-        #team.extend([optimal_chamion( matrix , team , combo_importance )])
-        new_champ, traits, matrix, weights, limits, tabs = optimal_chamion(
-            matrix, traits, combo_importance, weights, limits, tabs, team)
-        team.extend([new_champ])
-    return team
+    maxv = 0
+    numbers = list(range(len(matrix)))
+    combination_list = list(combinations(numbers, size))
+    for t in combination_list:
+        print(team, weights)
+        v = count_points_t(matrix, list(t), combo_importance, weights, limits)
+        if v > maxv:
+            team = [list(t)]
+            maxv = v
+        elif v == maxv:
+            team.append(list(t))
 
-
-def bruteforce():
-    pass
+    return team, maxv
