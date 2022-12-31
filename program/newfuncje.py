@@ -48,7 +48,7 @@ def generate_vector(lenght, mode):
             vector.extend([round(random.random(), 2)])
     elif mode == "limits":
         for i in range(0, lenght):
-            vector.extend([random.choice([1, 2, 2, 3, 4])])
+            vector.extend([random.choice([2, 2, 2, 3, 4])])
     return vector
 
 
@@ -82,7 +82,7 @@ def count_points_t(matrix, team, combo_v, weights, limits):
     # importace of active traits and combo
     for i in range(len(traits)):
         sum += (traits[i] // limits[i]) * weights[i] * combo_v
-    print(team, sum)
+    #print(team, sum)
     return sum
 
 
@@ -91,8 +91,9 @@ def optimal_chamion(matrix, actual_traits, combo_importance, weights, limits, ta
     copy_traits = actual_traits[:]
     bvchamps = []
 
-    if ac_team == None:
+    if ac_team == []:
         index = random.randrange(len(matrix))
+        #print(index)
     else:
         # szukamy w traitach ktore juz sa w druzynie
         best = 0
@@ -150,28 +151,30 @@ def optimal_chamion(matrix, actual_traits, combo_importance, weights, limits, ta
     # print(actual_traits)
     for j in range(len(matrix[0])-1):
         actual_traits[j] = actual_traits[j] + matrix[index][j]
-    print(weights, "w algo")
+    #print(weights, "w algo")
     return index, actual_traits, matrix, weights, limits, tabs
 
 
-def generate_optimal_team_g(matrix, size,  combo_importance, weights, limits, tabs):
+def generate_optimal_team_g(matrix, size,  combo_importance, weights, limits, tabs, n):
     maxteam = []
     maxv = 0
-    ctabs = tabs
-    cweights = weights
-    print(cweights, weights)
-    for _ in range(0, 10):
+    ctabs = [row[:] for row in tabs]
+    cweights = weights[:]
+    for _ in range(0, n):
         team = []
         traits = [0]*(len(matrix[0])-1)
-
+        tabs = [row[:] for row in ctabs]
+        weights = cweights[:]
         for i in range(0, size):
-            #team.extend([optimal_chamion( matrix , team , combo_importance )])
             new_champ, traits, matrix, weights, limits, tabs = optimal_chamion(
-                matrix, traits, combo_importance, cweights, limits, ctabs, team)
+                matrix, traits, combo_importance, weights, limits, tabs, team)
             team.extend([new_champ])
 
-        print(team, cweights, weights)
-        v = count_points_t(matrix, team, combo_importance, weights, limits)
+        team = sorted(team)
+        if team in maxteam:
+            continue
+
+        v = count_points_t(matrix, team, combo_importance, cweights, limits)
         if v > maxv:
             maxteam = [team]
             maxv = v
@@ -187,7 +190,7 @@ def generate_optimal_team_bf(matrix, size,  combo_importance, weights, limits):
     numbers = list(range(len(matrix)))
     combination_list = list(combinations(numbers, size))
     for t in combination_list:
-        print(team, weights)
+        #print(team, weights)
         v = count_points_t(matrix, list(t), combo_importance, weights, limits)
         if v > maxv:
             team = [list(t)]
@@ -196,3 +199,29 @@ def generate_optimal_team_bf(matrix, size,  combo_importance, weights, limits):
             team.append(list(t))
 
     return team, maxv
+
+def generate_random_team(matrix ,size , combo_importance, weights, limits , ntimes):
+    maxv = 0
+    avgv = 0
+    licznik = 0
+    for i in range(ntimes):
+        team = []
+
+        while len(team) < size:
+            index = random.randrange(len(matrix))
+            if not index in team:
+                team.extend([index])
+            else:
+                continue
+
+        v = count_points_t(matrix, team, combo_importance, weights, limits)
+
+        if v > maxv:
+            maxv = v
+        
+        licznik+=v
+            
+
+    avgv = licznik/ntimes
+
+    return team , avgv ,maxv

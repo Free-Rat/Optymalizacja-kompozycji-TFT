@@ -2,11 +2,11 @@ import random
 import newfuncje
 
 # size of team
-TEAM_CAPACITY = 3
+TEAM_CAPACITY = 6
 
 # base parametters
-AMOUNT_OF_CHAMPIONS = 5
-AMOUNT_OF_TRAITS = 4
+AMOUNT_OF_CHAMPIONS = 20
+AMOUNT_OF_TRAITS = 10
 
 # declaring parameters for traits
 MIN_AMOF_TRAITS = 2
@@ -14,7 +14,10 @@ MAX_AMOF_TRAITS = [3]
 dencity_tab = [MIN_AMOF_TRAITS]*3
 dencity_tab.extend(MAX_AMOF_TRAITS)
 
-IMORTANCE_OF_COMBO = 1.7
+IMORTANCE_OF_COMBO = 10
+
+N_random = 10
+N_greedy = 100
 
 # generating a random set of champions and their traits as a matrix
 champion_pool = newfuncje.generte_matrix(
@@ -29,7 +32,6 @@ newfuncje.printmatrix(tabs, "traits")
 # generaging a random importance of every trait
 weights = newfuncje.generate_vector(AMOUNT_OF_TRAITS, "weights")
 print(weights, "vector of importance ")
-cweights = weights
 
 # generating a random active limit for every trait
 active_limits = newfuncje.generate_vector(AMOUNT_OF_TRAITS, "limits")
@@ -38,14 +40,17 @@ print(active_limits, "vector of limits ")
 # generating optimal team using randomised greedy algorithm
 
 teamg, vg = newfuncje.generate_optimal_team_g(
-    champion_pool, TEAM_CAPACITY, IMORTANCE_OF_COMBO, cweights, active_limits, tabs)
+    champion_pool, TEAM_CAPACITY, IMORTANCE_OF_COMBO, weights, active_limits, tabs , N_greedy)
 print('optimal team (GREEDY): ', teamg, "and has value: ", vg)
 
 # generating optimal team using bruteforse
-print("aaaa", cweights)
 teamb, vb = newfuncje.generate_optimal_team_bf(
     champion_pool, TEAM_CAPACITY, IMORTANCE_OF_COMBO, weights, active_limits)
 print("optimal team (BF)", teamb, "and has value: ", vb)
+
+# genreating random team and calculating average value and max value
+team , average_v , max_v = newfuncje.generate_random_team(champion_pool, TEAM_CAPACITY,IMORTANCE_OF_COMBO,weights,active_limits,N_random)
+print(average_v , max_v)
 
 # TODO
 # 1 program sie wysypuje gdy jakas cecha jest pusta
