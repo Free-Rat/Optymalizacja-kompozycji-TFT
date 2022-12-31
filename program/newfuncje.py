@@ -75,9 +75,11 @@ def count_points_t(matrix, team, combo_v, weights, limits):
         sum += (matrix[team[i]][-1] / 100)
 
     # caltuate traits
-    for i in range(len(matrix[0])-1):
-        for j in range(len(matrix)):
-            traits[i] += matrix[j][i]
+    for i in team:
+        for j in range(len(matrix[0])-1):
+            traits[j] += matrix[i][j]
+        
+    #print(traits , team )
 
     # importace of active traits and combo
     for i in range(len(traits)):

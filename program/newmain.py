@@ -2,10 +2,10 @@ import random
 import newfuncje
 
 # size of team
-TEAM_CAPACITY = 6
+TEAM_CAPACITY = 8
 
 # base parametters
-AMOUNT_OF_CHAMPIONS = 20
+AMOUNT_OF_CHAMPIONS = 30
 AMOUNT_OF_TRAITS = 10
 
 # declaring parameters for traits
@@ -14,9 +14,9 @@ MAX_AMOF_TRAITS = [3]
 dencity_tab = [MIN_AMOF_TRAITS]*3
 dencity_tab.extend(MAX_AMOF_TRAITS)
 
-IMORTANCE_OF_COMBO = 10
+IMORTANCE_OF_COMBO = 3
 
-N_random = 10
+N_random = 100
 N_greedy = 100
 
 # generating a random set of champions and their traits as a matrix
@@ -46,7 +46,7 @@ print('optimal team (GREEDY): ', teamg, "and has value: ", vg)
 # generating optimal team using bruteforse
 teamb, vb = newfuncje.generate_optimal_team_bf(
     champion_pool, TEAM_CAPACITY, IMORTANCE_OF_COMBO, weights, active_limits)
-print("optimal team (BF)", teamb, "and has value: ", vb)
+print("optimal team (BF)",teamb , "and has value: ", vb)
 
 # genreating random team and calculating average value and max value
 team , average_v , max_v = newfuncje.generate_random_team(champion_pool, TEAM_CAPACITY,IMORTANCE_OF_COMBO,weights,active_limits,N_random)
