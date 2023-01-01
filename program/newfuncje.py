@@ -1,5 +1,32 @@
 import random
 from itertools import combinations
+import time
+import queue
+from bokeh.plotting import figure
+from bokeh.io import show
+
+F_NAME = "data.txt"
+
+def write_to_file(filename, *args):
+    with open(filename, 'a') as f:
+        counter = 1
+        for arg in args:
+            if isinstance(arg, list):
+                arg = [str(elem) for elem in arg]
+                arg = ' '.join(arg)
+            elif isinstance(arg, (int, float)):
+                arg = str(arg)
+            f.write(arg)
+            if counter % 3 == 0:
+                f.write('\n')
+            else:
+                f.write(' ')
+            counter += 1
+
+
+def clean_file(filename):
+    with open(filename, 'w') as f:
+        f.truncate()
 
 
 def sort_tabs(tab1, tab2):
@@ -116,7 +143,7 @@ def optimal_chamion(matrix, actual_traits, combo_importance, weights, limits, ta
             else:
                 # srednia wag
                 sawag = 0
-                for j in range(len(matrix[0])):
+                for j in range(len(matrix[0])-1):
                     if matrix[i][j] == 1:
                         sawag += weights[j]/limits[j]
                 sawag = sawag/len(matrix)
@@ -157,7 +184,8 @@ def optimal_chamion(matrix, actual_traits, combo_importance, weights, limits, ta
     return index, actual_traits, matrix, weights, limits, tabs
 
 
-def generate_optimal_team_g(matrix, size,  combo_importance, weights, limits, tabs, n):
+def generate_optimal_team_g(queue ,matrix, size,  combo_importance, weights, limits, tabs, n):
+    start_time = time.time()
     maxteam = []
     maxv = 0
     ctabs = [row[:] for row in tabs]
@@ -183,10 +211,17 @@ def generate_optimal_team_g(matrix, size,  combo_importance, weights, limits, ta
         elif v == maxv:
             maxteam.append(team)
 
-    return maxteam, maxv
+    end_time = time.time()
+    run_time = end_time - start_time
+    queue.put((maxteam , maxv , run_time))
+    write_to_file(F_NAME ,maxteam , maxv , run_time)
+
+    return maxteam, maxv , run_time
 
 
-def generate_optimal_team_bf(matrix, size,  combo_importance, weights, limits):
+def generate_optimal_team_bf(queue , matrix, size,  combo_importance, weights, limits):
+    start_time = time.time()
+
     team = []
     maxv = 0
     numbers = list(range(len(matrix)))
@@ -199,10 +234,14 @@ def generate_optimal_team_bf(matrix, size,  combo_importance, weights, limits):
             maxv = v
         elif v == maxv:
             team.append(list(t))
+    end_time = time.time()
+    run_time = end_time - start_time
+    queue.put((team , maxv , run_time))
+    write_to_file(F_NAME ,team , maxv , run_time)
+    return team, maxv , run_time
 
-    return team, maxv
-
-def generate_random_team(matrix ,size , combo_importance, weights, limits , ntimes):
+def generate_random_team(queue, matrix ,size , combo_importance, weights, limits , ntimes):
+    start_time = time.time()
     maxv = 0
     avgv = 0
     licznik = 0
@@ -223,7 +262,11 @@ def generate_random_team(matrix ,size , combo_importance, weights, limits , ntim
         
         licznik+=v
             
-
     avgv = licznik/ntimes
-
-    return team , avgv ,maxv
+    end_time = time.time()
+    run_time = end_time - start_time
+    #print(team, avgv , maxv , run_time)
+    #queue.put(( avgv , maxv , run_time))
+    write_to_file(F_NAME ,  avgv , maxv , run_time)
+    
+    return  avgv ,maxv, run_time
