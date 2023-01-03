@@ -5,7 +5,50 @@ import queue
 from bokeh.plotting import figure
 from bokeh.io import show
 
-F_NAME = "data.txt"
+F_NAME = r'c:\Users\tomek\Desktop\projeckty\Optymalizacja-kompozycji-TFT\program\data.txt'
+
+
+def get_data(filename):
+    nc = []
+    nt = []
+    tr = []
+    tg = []
+    tb = []
+    vr = []
+    vg = []
+    vb = []
+    with open(filename, 'r') as f:
+        txt = f.readlines()
+        for i in range(len(txt)):
+            if i % 5 == 0:
+                nc.extend([float(txt[i].split()[1])])
+            if i % 5 == 1:
+                nt.extend([float(txt[i].split()[1])])
+            if i % 5 == 2:
+                tr.extend([float(txt[i].split()[-1])])
+                vr.extend([float(txt[i].split()[0])])
+            if i % 5 == 3:
+                tg.extend([float(txt[i].split()[-1])])
+                vg.extend([float(txt[i].split()[-2])])
+            if i % 5 == 4:
+                tb.extend([float(txt[i].split()[-1])])
+                vb.extend([float(txt[i].split()[-2])])
+
+    return nc, nt, tr, tg, tb, vr, vg, vb
+
+
+def draw_plot(x, label,  *funk):
+    colors = ['red', 'orange', 'green', 'blue',
+              'indigo', 'violet', 'pink', 'purple', 'brown']
+    plot = figure()
+    i = 0
+    for f in funk:
+        plot.line(x, f, color=colors[i], legend_label=f"{label}:{i}")
+        i += 1
+    plot.legend.title = f"{label}"
+
+    show(plot)
+
 
 def write_to_file(filename, *args):
     with open(filename, 'a') as f:
@@ -56,7 +99,6 @@ def generate_tabs(matrix):
         tab = []
         for j in range(len(matrix)):
             if matrix[j][i] == 1:
-                #print(matrix[i][j], i , j)
                 tab.extend([j])
 
         vchamps = []
@@ -105,13 +147,11 @@ def count_points_t(matrix, team, combo_v, weights, limits):
     for i in team:
         for j in range(len(matrix[0])-1):
             traits[j] += matrix[i][j]
-        
-    #print(traits , team )
 
     # importace of active traits and combo
     for i in range(len(traits)):
         sum += (traits[i] // limits[i]) * weights[i] * combo_v
-    #print(team, sum)
+
     return sum
 
 
@@ -122,7 +162,6 @@ def optimal_chamion(matrix, actual_traits, combo_importance, weights, limits, ta
 
     if ac_team == []:
         index = random.randrange(len(matrix))
-        #print(index)
     else:
         # szukamy w traitach ktore juz sa w druzynie
         best = 0
@@ -132,10 +171,8 @@ def optimal_chamion(matrix, actual_traits, combo_importance, weights, limits, ta
 
             if weights[i] == max(weights):
                 bvchamps = tabs[i][:3]
-        # print(bvchamps)
 
         for i in bvchamps:
-            # print(i)
             if i == None:
                 print("skip")
                 continue
@@ -148,7 +185,6 @@ def optimal_chamion(matrix, actual_traits, combo_importance, weights, limits, ta
                         sawag += weights[j]/limits[j]
                 sawag = sawag/len(matrix)
 
-                # for j in range(len(matrix)):
                 nactual = 0
                 ncopy = 0
                 for j in range(len(matrix[0])-1):
@@ -171,20 +207,14 @@ def optimal_chamion(matrix, actual_traits, combo_importance, weights, limits, ta
             pass
         if tabs[i] == []:
             weights[i] = 0
-            # print("JD")
 
-    # printmatrix(tabs,"traits")
-    # print(weights)
-    # print("wziety element: ", index)
-    # printmatrix(matrix, "champions")
-    # print(actual_traits)
     for j in range(len(matrix[0])-1):
         actual_traits[j] = actual_traits[j] + matrix[index][j]
-    #print(weights, "w algo")
+
     return index, actual_traits, matrix, weights, limits, tabs
 
 
-def generate_optimal_team_g(queue ,matrix, size,  combo_importance, weights, limits, tabs, n):
+def generate_optimal_team_g(queue, matrix, size,  combo_importance, weights, limits, tabs, n):
     start_time = time.time()
     maxteam = []
     maxv = 0
@@ -213,13 +243,13 @@ def generate_optimal_team_g(queue ,matrix, size,  combo_importance, weights, lim
 
     end_time = time.time()
     run_time = end_time - start_time
-    queue.put((maxteam , maxv , run_time))
-    write_to_file(F_NAME ,maxteam , maxv , run_time)
+    queue.put((maxteam, maxv, run_time))
+    write_to_file(F_NAME, maxteam, maxv, run_time)
 
-    return maxteam, maxv , run_time
+    return maxteam, maxv, run_time
 
 
-def generate_optimal_team_bf(queue , matrix, size,  combo_importance, weights, limits):
+def generate_optimal_team_bf(queue, matrix, size,  combo_importance, weights, limits):
     start_time = time.time()
 
     team = []
@@ -227,7 +257,6 @@ def generate_optimal_team_bf(queue , matrix, size,  combo_importance, weights, l
     numbers = list(range(len(matrix)))
     combination_list = list(combinations(numbers, size))
     for t in combination_list:
-        #print(team, weights)
         v = count_points_t(matrix, list(t), combo_importance, weights, limits)
         if v > maxv:
             team = [list(t)]
@@ -236,11 +265,12 @@ def generate_optimal_team_bf(queue , matrix, size,  combo_importance, weights, l
             team.append(list(t))
     end_time = time.time()
     run_time = end_time - start_time
-    queue.put((team , maxv , run_time))
-    write_to_file(F_NAME ,team , maxv , run_time)
-    return team, maxv , run_time
+    queue.put((team, maxv, run_time))
+    write_to_file(F_NAME, team, maxv, run_time)
+    return team, maxv, run_time
 
-def generate_random_team(queue, matrix ,size , combo_importance, weights, limits , ntimes):
+
+def generate_random_team(queue, matrix, size, combo_importance, weights, limits, ntimes):
     start_time = time.time()
     maxv = 0
     avgv = 0
@@ -256,17 +286,13 @@ def generate_random_team(queue, matrix ,size , combo_importance, weights, limits
                 continue
 
         v = count_points_t(matrix, team, combo_importance, weights, limits)
-
         if v > maxv:
             maxv = v
-        
-        licznik+=v
-            
+        licznik += v
+
     avgv = licznik/ntimes
     end_time = time.time()
     run_time = end_time - start_time
-    #print(team, avgv , maxv , run_time)
-    #queue.put(( avgv , maxv , run_time))
-    write_to_file(F_NAME ,  avgv , maxv , run_time)
-    
-    return  avgv ,maxv, run_time
+    write_to_file(F_NAME,  avgv, maxv, run_time)
+
+    return avgv, maxv, run_time
