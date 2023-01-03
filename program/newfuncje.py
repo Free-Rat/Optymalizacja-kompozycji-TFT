@@ -5,8 +5,8 @@ import queue
 from bokeh.plotting import figure
 from bokeh.io import show
 
-F_NAME = r'c:\Users\tomek\Desktop\projeckty\Optymalizacja-kompozycji-TFT\program\data.txt'
-
+#F_NAME = r'c:\Users\tomek\Desktop\projeckty\Optymalizacja-kompozycji-TFT\program\data.txt'
+F_NAME = 'data.txt'
 
 def get_data(filename):
     nc = []
@@ -40,10 +40,11 @@ def get_data(filename):
 def draw_plot(x, label,  *funk):
     colors = ['red', 'orange', 'green', 'blue',
               'indigo', 'violet', 'pink', 'purple', 'brown']
+    czasy = ['random' , 'greedy', 'bruteforce']
     plot = figure()
     i = 0
     for f in funk:
-        plot.line(x, f, color=colors[i], legend_label=f"{label}:{i}")
+        plot.line(x, f, color=colors[i], legend_label=f"{label}:{czasy[i]}")
         i += 1
     plot.legend.title = f"{label}"
 
