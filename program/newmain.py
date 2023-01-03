@@ -14,7 +14,7 @@ TEAM_CAPACITY = 8
 s_nchampions = 20
 s_ntraits = 12
 
-e_nchampions = 50
+e_nchampions = 21
 e_ntraits = 29
 
 # declaring parameters for traits

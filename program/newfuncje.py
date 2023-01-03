@@ -150,7 +150,7 @@ def count_points_t(matrix, team, combo_v, weights, limits):
 
     # importace of active traits and combo
     for i in range(len(traits)):
-        sum += (traits[i] // limits[i]) * weights[i] * combo_v
+        sum += weights[i] * (combo_v ** (traits[i] // limits[i]))
 
     return sum
 
@@ -165,12 +165,18 @@ def optimal_chamion(matrix, actual_traits, combo_importance, weights, limits, ta
     else:
         # szukamy w traitach ktore juz sa w druzynie
         best = 0
-
+        bw = 0
+        bi = None
         for i in range(len(actual_traits)):
-            #print(weights[i] , max(weights))
+            if actual_traits[i] == 0:
+                continue
+            if weights[i] >= bw:
+                bw = weights[i]
+                bi = i
 
-            if weights[i] == max(weights):
-                bvchamps = tabs[i][:3]
+        bvchamps = tabs[bi][:3]
+        # print(bvchamps)
+        #print(actual_traits, weights, max(weights))
 
         for i in bvchamps:
             if i == None:
@@ -180,10 +186,12 @@ def optimal_chamion(matrix, actual_traits, combo_importance, weights, limits, ta
             else:
                 # srednia wag
                 sawag = 0
+                n = 0
                 for j in range(len(matrix[0])-1):
                     if matrix[i][j] == 1:
+                        n += 1
                         sawag += weights[j]/limits[j]
-                sawag = sawag/len(matrix)
+                sawag = sawag/n
 
                 nactual = 0
                 ncopy = 0
@@ -194,7 +202,7 @@ def optimal_chamion(matrix, actual_traits, combo_importance, weights, limits, ta
 
                 # suma punktow
                 pnk = matrix[i][-1] + sawag + \
-                    (nactual - ncopy)*combo_importance
+                    combo_importance**(nactual - ncopy)
 
                 if pnk >= best:
                     index = i
