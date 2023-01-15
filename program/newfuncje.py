@@ -5,8 +5,9 @@ import queue
 from bokeh.plotting import figure
 from bokeh.io import show
 
-#F_NAME = r'c:\Users\tomek\Desktop\projeckty\Optymalizacja-kompozycji-TFT\program\data.txt'
+# F_NAME = r'c:\Users\tomek\Desktop\projeckty\Optymalizacja-kompozycji-TFT\program\data.txt'
 F_NAME = 'data.txt'
+
 
 def get_data(filename):
     nc = []
@@ -40,7 +41,7 @@ def get_data(filename):
 def draw_plot(x, label,  *funk):
     colors = ['red', 'orange', 'green', 'blue',
               'indigo', 'violet', 'pink', 'purple', 'brown']
-    czasy = ['random' , 'greedy', 'bruteforce']
+    czasy = ['random', 'greedy', 'bruteforce']
     plot = figure()
     i = 0
     for f in funk:
@@ -171,13 +172,13 @@ def optimal_chamion(matrix, actual_traits, combo_importance, weights, limits, ta
         for i in range(len(actual_traits)):
             if actual_traits[i] == 0:
                 continue
-            if weights[i] >= bw:
-                bw = weights[i]
+            if weights[i]/limits[i] >= bw:
+                bw = weights[i]/limits[i]
                 bi = i
 
         bvchamps = tabs[bi][:3]
         # print(bvchamps)
-        #print(actual_traits, weights, max(weights))
+        # print(actual_traits, weights, max(weights))
 
         for i in bvchamps:
             if i == None:
