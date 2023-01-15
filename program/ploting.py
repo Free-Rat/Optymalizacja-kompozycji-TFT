@@ -2,7 +2,7 @@ import newfuncje
 
 nc, nt, tr, tg, tb, vr, vg, vb = newfuncje.get_data(newfuncje.F_NAME)
 
-#print(nc, nt, tr, tg, tb, vr, vg, vb)
+# print(nc, nt, tr, tg, tb, vr, vg, vb)
 
 newfuncje.draw_plot(nc, "czas", tr, tg, tb)
 
@@ -10,7 +10,9 @@ lbg = 0
 lbr = 0
 lgr = 0
 
-for i in range(len(vg)):
+print(len(vb), len(vg), len(vr))
+
+for i in range(len(vb)):
     lbg += vb[i]/vg[i]
     lbr += vb[i]/vr[i]
     lgr += vg[i]/vr[i]
