@@ -2,7 +2,7 @@ import random
 import newfuncje
 import threading
 import queue
-
+import sys
 queue = queue.Queue()
 
 # size of team
@@ -89,6 +89,16 @@ def main(nchampions, ntraits):
 
 cu_champs = s_nchampions
 cu_traits = s_ntraits
+if __name__ == "__main__":
+    arg = list[sys.argv]
+    if arg[0] != None:
+        cu_champs=arg[0]
+    if arg[1] != None:    
+        cu_traits=arg[1]
+    if arg[2] != None:
+        e_nchampions=arg[2]
+    if arg[3] != None:
+        e_ntraits=arg[3]
 
 while True:
     if cu_champs == e_nchampions + 1:

@@ -265,8 +265,8 @@ def generate_optimal_team_bf(queue, matrix, size,  combo_importance, weights, li
     team = []
     maxv = 0
     numbers = list(range(len(matrix)))
-    combination_list = list(combinations(numbers, size))
-    for t in combination_list:
+    for t in combinations(numbers, size):
+        t = list(t)
         v = count_points_t(matrix, list(t), combo_importance, weights, limits)
         if v > maxv:
             team = [list(t)]
